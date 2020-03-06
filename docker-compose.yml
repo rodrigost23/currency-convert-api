@@ -1,11 +1,7 @@
 version: '3.7'
 
-volumes:
-    logs:
-        driver: local
-
 services:
-    slim:
+    php:
         image: php:7-alpine
         working_dir: /var/www
         command: php -S 0.0.0.0:8080 -t public
@@ -16,3 +12,46 @@ services:
         volumes:
             - .:/var/www
             - logs:/var/www/logs
+        depends_on:
+            - postgres
+        networks:
+            - network
+
+    postgres:
+        image: postgres:12.2
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123}
+            PGDATA: /data/postgres
+        volumes:
+            - postgres:/data/postgres
+            - ./db-init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - "5432:5432"
+        networks:
+            - network
+
+    pgadmin:
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+        volumes:
+            - pgadmin:/root/.pgadmin
+            - ./pgadmin-servers.json:/pgadmin4/servers.json
+        ports:
+            - "${PGADMIN_PORT:-5050}:80"
+        depends_on:
+            - postgres
+        networks:
+            - network
+
+volumes:
+    logs:
+        driver: local
+    postgres:
+    pgadmin:
+
+networks:
+    network:
+        driver: bridge
