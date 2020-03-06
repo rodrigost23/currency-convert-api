@@ -1,1 +1,0 @@
-CREATE DATABASE currency_convert
