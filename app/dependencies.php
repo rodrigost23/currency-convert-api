@@ -1,7 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 use DI\ContainerBuilder;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Tools\Setup;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -24,5 +31,26 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+        EntityManagerInterface::class => function (ContainerInterface $c): EntityManager {
+            $doctrineSettings = $c->get('settings')['doctrine'];
+
+            $config = Setup::createAnnotationMetadataConfiguration(
+                $doctrineSettings['metadata_dirs'],
+                $doctrineSettings['dev_mode']
+            );
+
+            $config->setMetadataDriverImpl(
+                new AnnotationDriver(
+                    new AnnotationReader,
+                    $doctrineSettings['metadata_dirs']
+                )
+            );
+
+            $config->setMetadataCacheImpl(
+                new FilesystemCache($doctrineSettings['cache_dir'])
+            );
+
+            return EntityManager::create($doctrineSettings['connection'], $config);
+        }
     ]);
 };

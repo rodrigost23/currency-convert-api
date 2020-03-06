@@ -14,8 +14,13 @@ return function (App $app) {
         return $response;
     });
 
+    // TODO: Remove this example
     $app->group('/users', function (Group $group) {
         $group->get('', ListUsersAction::class);
+        $group->get('/{id}', ViewUserAction::class);
+    });
+
+    $app->group('/convert', function (Group $group) {
         $group->get('/{id}', ViewUserAction::class);
     });
 };
