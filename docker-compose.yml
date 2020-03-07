@@ -1,17 +1,31 @@
 version: '3.7'
 
 services:
-    php:
-        build: .docker
+    nginx:
+        image: nginx:1.17.9-alpine
         working_dir: /var/www
-        command: php -S 0.0.0.0:8080 -t public
+        volumes:
+            - .:/var/www
+            - ./logs/nginx:/var/log/nginx
+            - ./.docker/nginx/site.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - "${NGINX_PORT:-8080}:80"
+        links:
+            - php
+        networks:
+            - network
+
+    php:
+        build:
+            context: ./.docker/php
+        working_dir: /var/www
         environment:
             docker: "true"
-        ports:
-            - 8080:8080
         volumes:
             - .:/var/www
             - logs:/var/www/logs
+        expose:
+            - 9000
         depends_on:
             - postgres
         networks:
@@ -25,7 +39,7 @@ services:
             PGDATA: /data/postgres
         volumes:
             - postgres:/data/postgres
-            - ./db-init.sql:/docker-entrypoint-initdb.d/init.sql
+            #- ./db-init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - "5432:5432"
         networks:
@@ -38,7 +52,7 @@ services:
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
         volumes:
             - pgadmin:/root/.pgadmin
-            - ./.docker/config/pgadmin/servers.json:/pgadmin4/servers.json
+            - ./.docker/pgadmin/servers.json:/pgadmin4/servers.json
         ports:
             - "${PGADMIN_PORT:-5050}:80"
         depends_on:
