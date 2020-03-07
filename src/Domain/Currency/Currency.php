@@ -16,7 +16,7 @@ class Currency implements JsonSerializable
     /** 
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @var int|null
      */
     private $id;

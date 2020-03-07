@@ -1,0 +1,11 @@
+CREATE TABLE conversion_log (id SERIAL NOT NULL, timestamp TIMESTAMP(0) WITH TIME ZONE NOT NULL, result NUMERIC(10, 0) NOT NULL, fromCurrency_id INT DEFAULT NULL, toCurrency_id INT DEFAULT NULL, PRIMARY KEY(id));
+CREATE INDEX IDX_36AA9A5AF65738DE ON conversion_log (fromCurrency_id);
+CREATE INDEX IDX_36AA9A5AFAC01CA4 ON conversion_log (toCurrency_id);
+
+CREATE TABLE currency (id SERIAL NOT NULL, code VARCHAR(255) NOT NULL, symbol VARCHAR(255) NOT NULL, rate NUMERIC(10, 0) NOT NULL, PRIMARY KEY(id));
+ALTER TABLE conversion_log ADD CONSTRAINT FK_36AA9A5AF65738DE FOREIGN KEY (fromCurrency_id) REFERENCES currency (id) NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE conversion_log ADD CONSTRAINT FK_36AA9A5AFAC01CA4 FOREIGN KEY (toCurrency_id) REFERENCES currency (id) NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+INSERT INTO currency (code, symbol, rate) VALUES ('USD', '$', 1);
+INSERT INTO currency (code, symbol, rate) VALUES ('BRL', 'R$', 4.63);
+INSERT INTO currency (code, symbol, rate) VALUES ('EUR', 'R$', 0.89);
