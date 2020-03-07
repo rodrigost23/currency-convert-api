@@ -17,12 +17,6 @@ return function (App $app) {
         return $response;
     });
 
-    // TODO: Remove this example
-    $app->group('/users', function (Group $group) {
-        $group->get('', ListUsersAction::class);
-        $group->get('/{id}', ViewUserAction::class);
-    });
-
     $app->group('/currency', function (Group $group) {
         $group->get('/list', ListCurrenciesAction::class);
         $group->get('/{code}', ViewCurrencyAction::class);
