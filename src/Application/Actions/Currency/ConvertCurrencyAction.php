@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Application\Actions\Currency;
 
 use App\Domain\ConversionLog\ConversionLog;
+use App\Domain\Currency\Currency;
 use App\Domain\Currency\CurrencyNotFoundException;
 use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Exception\HttpNotImplementedException;
 
 class ConvertCurrencyAction extends CurrencyAction
 {
@@ -17,26 +17,39 @@ class ConvertCurrencyAction extends CurrencyAction
      */
     protected function action(): Response
     {
-        $fromCode = $this->resolveArg('from-code');
+        $fromCode = (string) $this->resolveArg('from-code');
+        $toCode = (string) $this->resolveArg('to-code');
+        $value = (string) $this->resolveArg('value');
+
+        /**
+         * @var Currency|null $fromCurrency
+         */
         $fromCurrency = $this->currencyRepository->findOneBy(['code' => $fromCode]);
 
         if ($fromCurrency === null) {
-            throw new CurrencyNotFoundException($fromCode);            
+            throw new CurrencyNotFoundException($fromCode);
         }
 
-        $toCode = $this->resolveArg('to-code');
+        /**
+         * @var Currency|null $toCurrency
+         */
         $toCurrency = $this->currencyRepository->findOneBy(['code' => $toCode]);
 
         if ($toCurrency === null) {
-            throw new CurrencyNotFoundException($toCode);            
+            throw new CurrencyNotFoundException($toCode);
         }
 
-        $logEntry = new ConversionLog(null, new DateTime(), $fromCurrency, $toCurrency, 0);
+        // Using bcmath to correctly calculate decimal numbers:
+        // ($value * $toCurrency->getRate()) / $fromCurrency->getRate();
+        $result = bcdiv(bcmul($value, $toCurrency->getRate(), 6), $fromCurrency->getRate(), 6);
+
+        $logEntry = new ConversionLog(null, new DateTime(), $fromCurrency, $toCurrency, $result);
         $this->em->persist($logEntry);
         $this->em->flush();
 
-        throw new HttpNotImplementedException($this->request);
+        // Refresh from DB to round the number
+        $this->em->refresh($logEntry);
 
-        return $this->respondWithData("...");
+        return $this->respondWithData($logEntry->getResult());
     }
 }
