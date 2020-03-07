@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 use App\Application\Actions\Currency\ListCurrenciesAction;
+use App\Application\Actions\Currency\ViewCurrencyAction;
 use App\Application\Actions\User\ListUsersAction;
 use App\Application\Actions\User\ViewUserAction;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -21,8 +23,9 @@ return function (App $app) {
         $group->get('/{id}', ViewUserAction::class);
     });
 
-    $app->group('/currencies', function (Group $group) {
-        $group->get('', ListCurrenciesAction::class);
+    $app->group('/currency', function (Group $group) {
+        $group->get('/list', ListCurrenciesAction::class);
+        $group->get('/{code}', ViewCurrencyAction::class);
     });
 
     $app->group('/convert', function (Group $group) {
