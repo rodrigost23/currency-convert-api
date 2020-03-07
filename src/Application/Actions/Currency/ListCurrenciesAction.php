@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Application\Actions\Convert;
+namespace App\Application\Actions\Currency;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-class ListCurrenciesAction extends ConvertAction
+class ListCurrenciesAction extends CurrencyAction
 {
     /**
      * {@inheritdoc}
