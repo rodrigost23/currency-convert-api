@@ -43,12 +43,12 @@ class ConversionLog implements JsonSerializable
     private $toCurrency;
 
     /**
-     * @ORM\Column(type="decimal")
-     * @var float
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @var string
      */
     private $result;
 
-    public function __construct(?int $id, \DateTime $timestamp, Currency $fromCurrency, Currency $toCurrency, float $result)
+    public function __construct(?int $id, \DateTime $timestamp, Currency $fromCurrency, Currency $toCurrency, string $result)
     {
         $this->id = $id;
         $this->timestamp = $timestamp;
@@ -90,9 +90,9 @@ class ConversionLog implements JsonSerializable
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getResult(): float
+    public function getResult(): string
     {
         return $this->result;
     }

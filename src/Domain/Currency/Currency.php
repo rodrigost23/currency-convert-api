@@ -34,8 +34,8 @@ class Currency implements JsonSerializable
     private $symbol;
 
     /**
-     * @ORM\Column(type="decimal")
-     * @var float
+     * @ORM\Column(type="decimal", precision=12, scale=6)
+     * @var string
      */
     private $rate;
 
@@ -45,7 +45,7 @@ class Currency implements JsonSerializable
      * @param string    $symbol
      * @param float     $rate
      */
-    public function __construct(?int $id, string $code, string $symbol, float $rate)
+    public function __construct(?int $id, string $code, string $symbol, string $rate)
     {
         $this->id = $id;
         $this->code = strtoupper($code);
@@ -78,9 +78,9 @@ class Currency implements JsonSerializable
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getRate(): float
+    public function getRate(): string
     {
         return $this->rate;
     }
