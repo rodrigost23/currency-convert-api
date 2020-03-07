@@ -104,9 +104,10 @@ class ConversionLog implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'code' => $this->code,
-            'symbol' => $this->symbol,
-            'rate' => $this->rate,
+            'timestamp' => $this->timestamp,
+            'fromCurrency' => $this->fromCurrency,
+            'toCurrency' => $this->toCurrency,
+            'result' => $this->result,
         ];
     }
 }
