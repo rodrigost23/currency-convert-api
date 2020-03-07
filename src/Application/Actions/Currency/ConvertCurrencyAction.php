@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Currency;
 
+use App\Domain\ConversionLog\ConversionLog;
 use App\Domain\Currency\CurrencyNotFoundException;
+use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpNotImplementedException;
 
@@ -29,8 +31,11 @@ class ConvertCurrencyAction extends CurrencyAction
             throw new CurrencyNotFoundException($toCode);            
         }
 
+        $logEntry = new ConversionLog(null, new DateTime(), $fromCurrency, $toCurrency, 0);
+        $this->em->persist($logEntry);
+        $this->em->flush();
+
         throw new HttpNotImplementedException($this->request);
-        
 
         return $this->respondWithData("...");
     }

@@ -5,7 +5,6 @@ namespace App\Application\Actions\Currency;
 
 use App\Application\Actions\Action;
 use App\Domain\Currency\Currency;
-use App\Infrastructure\Persistence\Currency\DoctrineCurrencyRepository;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +16,7 @@ abstract class CurrencyAction extends Action
     /**
      * @var EntityManager
      */
-    private $em;
+    protected $em;
 
     /**
      * @var ObjectRepository|EntityRepository
