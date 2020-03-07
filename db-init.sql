@@ -9,4 +9,4 @@ ALTER TABLE conversion_log ADD CONSTRAINT FK_36AA9A5A16B7BF15 FOREIGN KEY (to_cu
 INSERT INTO currency (code, symbol, rate) VALUES ('USD', '$', '1'::numeric);
 INSERT INTO currency (code, symbol, rate) VALUES ('BRL', 'R$', '4.62762'::numeric);
 INSERT INTO currency (code, symbol, rate) VALUES ('EUR', 'R$', '0.885813'::numeric);
-INSERT INTO currency (code, symbol, rate) VALUES ('GBP', '₤', '0.885813'::numeric);
+INSERT INTO currency (code, symbol, rate) VALUES ('GBP', '₤', '0.766313'::numeric);
