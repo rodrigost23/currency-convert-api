@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Application\Actions\Currency\ConvertCurrencyAction;
 use App\Application\Actions\Currency\ListCurrenciesAction;
 use App\Application\Actions\Currency\ViewCurrencyAction;
 use App\Application\Actions\User\ListUsersAction;
@@ -23,6 +24,6 @@ return function (App $app) {
     });
 
     $app->group('/convert', function (Group $group) {
-        $group->get('/{id}', ViewUserAction::class);
+        $group->get('/{from-code}/{to-code}/{value}', ConvertCurrencyAction::class);
     });
 };
