@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Application\Actions\ConversionLog\ListConversionLogAction;
 use App\Application\Actions\Currency\ConvertCurrencyAction;
 use App\Application\Actions\Currency\ListCurrenciesAction;
 use App\Application\Actions\Currency\ViewCurrencyAction;
-use App\Application\Actions\User\ListUsersAction;
-use App\Application\Actions\User\ViewUserAction;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -25,5 +24,6 @@ return function (App $app) {
 
     $app->group('/convert', function (Group $group) {
         $group->get('/{from-code}/{to-code}/{value}', ConvertCurrencyAction::class);
+        $group->get('/log', ListConversionLogAction::class);
     });
 };
