@@ -1,4 +1,5 @@
-CREATE TABLE conversion_log (id SERIAL NOT NULL, from_currency_id INT DEFAULT NULL, to_currency_id INT DEFAULT NULL, timestamp TIMESTAMP(0) WITH TIME ZONE NOT NULL, result NUMERIC(10, 2) NOT NULL, PRIMARY KEY(id));
+CREATE TABLE conversion_log (id SERIAL NOT NULL, from_currency_id INT DEFAULT NULL, to_currency_id INT DEFAULT NULL, timestamp TIMESTAMP(0) WITH TIME ZONE NOT NULL, input NUMERIC(10, 
+2) NOT NULL, result NUMERIC(10, 2) NOT NULL, PRIMARY KEY(id));
 CREATE INDEX IDX_36AA9A5AA66BB013 ON conversion_log (from_currency_id);
 CREATE INDEX IDX_36AA9A5A16B7BF15 ON conversion_log (to_currency_id);
 

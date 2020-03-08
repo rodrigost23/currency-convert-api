@@ -43,7 +43,7 @@ class ConvertCurrencyAction extends CurrencyAction
         // ($value * $toCurrency->getRate()) / $fromCurrency->getRate();
         $result = bcdiv(bcmul($value, $toCurrency->getRate(), 6), $fromCurrency->getRate(), 6);
 
-        $logEntry = new ConversionLog(null, new DateTime(), $fromCurrency, $toCurrency, $result);
+        $logEntry = new ConversionLog(null, new DateTime(), $fromCurrency, $toCurrency, $value, $result);
         $this->em->persist($logEntry);
         $this->em->flush();
 
