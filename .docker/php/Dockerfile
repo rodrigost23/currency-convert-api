@@ -5,9 +5,9 @@ RUN apk --no-cache update \
     # Install pdo_pgsql dependency:
     && apk add --no-cache postgresql-dev \
     # Install pdo_pgsql:
-    && docker-php-ext-install pdo pdo_pgsql pgsql bcmath \
+    && docker-php-ext-install pdo pdo_pgsql pgsql bcmath
     # Download and install Composer:
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    # && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # CMD composer install
     # Update database schema from Doctrine entities

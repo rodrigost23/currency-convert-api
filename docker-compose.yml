@@ -31,6 +31,15 @@ services:
         networks:
             - network
 
+    composer:
+        restart: 'no'
+        image: composer
+        command: install --ignore-platform-reqs
+        volumes:
+            - .:/app
+        links:
+            - php
+
     postgres:
         image: postgres:12.2
         environment:
