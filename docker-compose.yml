@@ -23,6 +23,7 @@ services:
             docker: "true"
         volumes:
             - .:/var/www
+            - ./.docker/php/entrypoint.sh:/usr/local/bin/docker-php-entrypoint
             - logs:/var/www/logs
         expose:
             - 9000
