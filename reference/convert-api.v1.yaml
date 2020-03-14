@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: convert-api
+  version: '1.0'
+servers:
+  - url: 'http://converter-api.brazilsouth.cloudapp.azure.com/'
+paths:
+  'convert/{from}/{to}/{value}':
+    parameters:
+      - schema:
+          type: string
+          pattern: '^[A-Z]*3$'
+          minLength: 3
+          maxLength: 3
+        name: from
+        in: path
+        required: true
+        description: the currency code to convert from
+      - schema:
+          type: string
+          maxLength: 3
+          minLength: 3
+          pattern: '^[A-Z]*3$'
+        name: to
+        in: path
+        required: true
+        description: the currency code to convert to
+      - schema:
+          type: number
+        name: value
+        in: path
+        required: true
+        description: the value to convert
+    get:
+      summary: getConversion
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    default: 200
+                    example: 200
+                  data:
+                    type: string
+                    example: '4.69'
+                    pattern: "^\\d+\\.\\d+$"
+                    description: the result
+                required:
+                  - statusCode
+                  - data
+              examples:
+                'USD to BRL: 1':
+                  value:
+                    statusCode: 200
+                    data: '4.69'
+          headers: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  error:
+                    $ref: '#/components/schemas/error'
+      operationId: get-convert-from-to-value
+      parameters: []
+      requestBody: {}
+      description: converts a value
+components:
+  schemas:
+    error:
+      title: error
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
