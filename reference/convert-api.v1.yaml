@@ -3,23 +3,19 @@ info:
   title: convert-api
   version: '1.0'
 servers:
-  - url: 'http://converter-api.brazilsouth.cloudapp.azure.com/'
+  - url: 'http://converter-api.brazilsouth.cloudapp.azure.com'
 paths:
   'convert/{from}/{to}/{value}':
     parameters:
       - schema:
           type: string
           pattern: '^[A-Z]*3$'
-          minLength: 3
-          maxLength: 3
         name: from
         in: path
         required: true
         description: the currency code to convert from
       - schema:
           type: string
-          maxLength: 3
-          minLength: 3
           pattern: '^[A-Z]*3$'
         name: to
         in: path
@@ -33,7 +29,8 @@ paths:
         description: the value to convert
     get:
       summary: getConversion
-      tags: []
+      tags:
+        - API
       responses:
         '200':
           description: OK
@@ -47,10 +44,7 @@ paths:
                     default: 200
                     example: 200
                   data:
-                    type: string
-                    example: '4.69'
-                    pattern: "^\\d+\\.\\d+$"
-                    description: the result
+                    $ref: '#/components/schemas/string-number'
                 required:
                   - statusCode
                   - data
@@ -75,6 +69,124 @@ paths:
       parameters: []
       requestBody: {}
       description: converts a value
+  '/currency/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      summary: get currency by id
+      tags:
+        - API
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/currency'
+        '400':
+          description: Currency not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/error'
+      operationId: get-currency-id
+      description: gets a currency details by its id
+  /currency/list:
+    get:
+      summary: currency get list
+      tags:
+        - API
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    default: 200
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/currency'
+      operationId: get-currency-list
+      description: list all available currencies
+  /convert/log:
+    get:
+      summary: convert get log
+      tags:
+        - API
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                  data:
+                    type: array
+                    items: {}
+              examples:
+                Example:
+                  value:
+                    statusCode: 200
+                    data:
+                      - id: 2
+                        timestamp:
+                          date: '2020-03-14 16:35:19.000000'
+                          timezone_type: 1
+                          timezone: '+00:00'
+                        fromCurrency:
+                          id: 1
+                          code: USD
+                          symbol: $
+                          rate: '1.000000'
+                        toCurrency:
+                          id: 2
+                          code: BRL
+                          symbol: R$
+                          rate: '4.691770'
+                        input: '1.00'
+                        result: '4.69'
+                      - id: 1
+                        timestamp:
+                          date: '2020-03-14 16:14:05.000000'
+                          timezone_type: 1
+                          timezone: '+00:00'
+                        fromCurrency:
+                          id: 1
+                          code: USD
+                          symbol: $
+                          rate: '1.000000'
+                        toCurrency:
+                          id: 2
+                          code: BRL
+                          symbol: R$
+                          rate: '4.691770'
+                        input: '1.00'
+                        result: '4.69'
+          headers: {}
+      operationId: get-convert-log
+      description: get conversion log
 components:
   schemas:
     error:
@@ -85,3 +197,98 @@ components:
           type: string
         description:
           type: string
+      x-tags:
+        - Data type
+    currency:
+      title: currency
+      type: object
+      x-examples:
+        USD:
+          id: 1
+          code: USD
+          symbol: $
+          rate: '1.000000'
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          pattern: '^[A-Z]{3}'
+        symbol:
+          type: string
+        rate:
+          $ref: '#/components/schemas/string-number'
+      required:
+        - id
+        - code
+        - symbol
+        - rate
+      x-tags:
+        - Data type
+    conversion-log-entry:
+      title: conversion-log-entry
+      type: object
+      x-examples:
+        Example:
+          id: 1
+          timestamp:
+            date: '2020-03-14 16:35:19.000000'
+            timezone_type: 1
+            timezone: '+00:00'
+          fromCurrency:
+            id: 1
+            code: USD
+            symbol: $
+            rate: '1.000000'
+          toCurrency:
+            id: 2
+            code: BRL
+            symbol: R$
+            rate: '4.691770'
+          input: '1.00'
+          result: '4.69'
+      description: ''
+      properties:
+        id:
+          type: integer
+        timestamp:
+          $ref: '#/components/schemas/timestamp'
+        fromCurrency:
+          $ref: '#/components/schemas/currency'
+        toCurrency:
+          $ref: '#/components/schemas/currency'
+        input:
+          $ref: '#/components/schemas/string-number'
+        output:
+          $ref: '#/components/schemas/string-number'
+      x-tags:
+        - Data type
+    timestamp:
+      title: timestamp
+      type: object
+      x-examples:
+        Example:
+          date: '2020-03-14 16:35:19.000000'
+          timezone_type: 1
+          timezone: '+00:00'
+      properties:
+        date:
+          type: string
+          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}$"
+        timezone_type:
+          type: integer
+        timezone:
+          type: string
+          example: '+00:00'
+          pattern: "^[+-]\\d{2}:\\d{2}"
+      x-tags:
+        - Data type
+    string-number:
+      type: string
+      title: string-number
+      example: '1.25'
+      minLength: 4
+      pattern: "^\\d+\\.\\d\\d+$"
+      x-tags:
+        - Data type
